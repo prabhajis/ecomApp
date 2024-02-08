@@ -6,7 +6,7 @@ spring:
     name: ecommerce-app
   #Primary datasource with read and write support
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/ecommercedb?useUnicode=yes&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/ecommercedb?useUnicode=yes&characterEncoding=UTF-8
     username: root
     password: root
     driver-class: com.mysql.cj.jdbc.Driver

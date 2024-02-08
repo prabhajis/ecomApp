@@ -7,13 +7,16 @@ import com.demo.ecomApp.entity.ShelfEntity;
 import com.demo.ecomApp.entity.mapper.DtoMapper;
 import com.demo.ecomApp.repository.ShelfRepository;
 import com.demo.ecomApp.service.ShelfService;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class ShelfServiceImpl implements ShelfService {
 
@@ -28,7 +31,12 @@ public class ShelfServiceImpl implements ShelfService {
             for(ProductShelfItemDto items: shelfDTOlist.getShelf()){
                 shelfEntity.setProductId(items.getProductId());
                 shelfEntity.setRelevancyScore(items.getRelevancyScore());
-                shelfRepository.save(shelfEntity);
+                try {
+                    shelfRepository.save(shelfEntity);
+
+                } catch (DataIntegrityViolationException e){
+                    log.info("Foreign key constraint violation: Coudn't insert product ID : {}", shelfEntity.getProductId() + e.getMessage());
+                }
             }
         }
     }
