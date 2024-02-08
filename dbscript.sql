@@ -4,6 +4,7 @@ CREATE DATABASE ecommercedb;
 USE ecommercedb;
 
 -- Create a table for products
+
 CREATE TABLE products (
     product_id VARCHAR(15) PRIMARY KEY,
     category VARCHAR(50),
@@ -18,3 +19,4 @@ CREATE TABLE shelves (
     PRIMARY KEY (shopper_id, product_id),
     FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
+
