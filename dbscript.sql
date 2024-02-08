@@ -1,12 +1,11 @@
 -- create database
 CREATE DATABASE ecommercedb;
 
-USE ecommercedb;;
+USE ecommercedb;
 
 -- Create a table for products
 CREATE TABLE Products (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    product_id VARCHAR(15),
+    product_id VARCHAR(15) PRIMARY KEY,
     category VARCHAR(50),
     brand VARCHAR(50)
 );
