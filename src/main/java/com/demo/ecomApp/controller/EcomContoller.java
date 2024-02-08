@@ -2,8 +2,6 @@ package com.demo.ecomApp.controller;
 
 import com.demo.ecomApp.dto.ShopperDto;
 import com.demo.ecomApp.entity.ProductsEntity;
-import com.demo.ecomApp.entity.ShelfEntity;
-import com.demo.ecomApp.entity.ShopperEntity;
 import com.demo.ecomApp.service.ProductService;
 import com.demo.ecomApp.service.ShelfService;
 import lombok.extern.slf4j.Slf4j;
