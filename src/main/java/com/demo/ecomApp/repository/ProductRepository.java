@@ -1,6 +1,7 @@
 package com.demo.ecomApp.repository;
 
 import com.demo.ecomApp.entity.ProductsEntity;
+import com.demo.ecomApp.entity.ShelfEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductsEntity, String> {
@@ -25,4 +27,10 @@ public interface ProductRepository extends JpaRepository<ProductsEntity, String>
             Pageable pageable
     );
 
+    Optional<ProductsEntity> findByProductId(
+            @Param("productId") String productId
+    );
+
+    @Query("SELECT DISTINCT p.productId FROM products p")
+    List<String> getProductIds();
 }

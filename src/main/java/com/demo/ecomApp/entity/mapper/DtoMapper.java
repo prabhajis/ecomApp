@@ -1,11 +1,10 @@
 package com.demo.ecomApp.entity.mapper;
 
 import com.demo.ecomApp.dto.ProductDto;
+import com.demo.ecomApp.dto.ProductShelfItemDto;
 import com.demo.ecomApp.dto.ShopperDto;
 import com.demo.ecomApp.entity.ProductsEntity;
 import com.demo.ecomApp.entity.ShelfEntity;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,4 +32,19 @@ public class DtoMapper {
         productEntity.setBrand(productDto.getBrand());
         return productEntity;
     }
+
+//    public static ShelfEntity convertToShelfEntity(ProductShelfItemDto productShelfItemDto) {
+//        ShelfEntity shelfEntity = new ShelfEntity();
+//        shelfEntity.setProductId(productShelfItemDto.getProductId());
+//
+//
+//
+//
+////        productShelfItemDtos.stream()
+////                .forEach(dto -> {
+////                    shelfEntity.setProductId(dto.getProductId());
+////                    shelfEntity.setRelevancyScore(dto.getRelevancyScore());
+////                });
+//        return  shelfEntity;
+//    }
 }

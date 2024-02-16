@@ -1,7 +1,9 @@
 package com.demo.ecomApp.controller;
 
 import com.demo.ecomApp.dto.ProductDto;
+import com.demo.ecomApp.dto.ResponseDto;
 import com.demo.ecomApp.dto.ShelfDto;
+import com.demo.ecomApp.exception.EcomException;
 import com.demo.ecomApp.service.ProductService;
 import com.demo.ecomApp.service.ShelfService;
 import lombok.extern.slf4j.Slf4j;
@@ -24,33 +26,25 @@ public class DataController {
     ShelfService shelfService;
 
     @PostMapping(value = "/add-products")
-    public ResponseEntity addProducts(@RequestBody List<ProductDto> productList) {
-        ResponseEntity responseEntity;
-        try {
+    public ResponseEntity<ResponseDto> addProducts(@RequestBody List<ProductDto> productList) {
+        ResponseDto responseDto = new ResponseDto();
+        ResponseEntity<ResponseDto> responseEntity;
             productService.insertProducts(productList);
-            responseEntity = ResponseEntity.status(HttpStatus.CREATED).body("Products Inserted");
-            log.info("Inserted Successfully ");
+            responseDto.setMessage("Products inserted");
+            responseEntity = ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
             return responseEntity;
-        } catch (Exception e){
-            responseEntity = (ResponseEntity) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-            log.error("Insert Failed ", e);
-        }
-        return responseEntity;
-
     }
 
     @PostMapping(value = "/addShelves")
-    public ResponseEntity addShelves(@RequestBody List<ShelfDto> shelfDtoList) {
-        ResponseEntity responseEntity;
-        try {
+    public ResponseEntity<ResponseDto> addShelves(@RequestBody List<ShelfDto> shelfDtoList) {
+        ResponseEntity<ResponseDto> responseEntity = null;
+        ResponseDto responseDto = new ResponseDto();
+            if(shelfDtoList.isEmpty()){
+                throw new EcomException("POL0001","Unable to insert shelves", "Shelf list not found");
+            }
             shelfService.insertShelfData(shelfDtoList);
-            responseEntity = ResponseEntity.status(HttpStatus.CREATED).body("shelves Inserted");
-            log.info("Inserted Successfully ");
-        } catch (Exception e){
-            responseEntity = (ResponseEntity) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-            log.error("Insert Failed ", e);
-        }
+            responseDto.setMessage("Shopper Shelves inserted");
+            responseEntity = ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
         return  responseEntity;
     }
-
 }
