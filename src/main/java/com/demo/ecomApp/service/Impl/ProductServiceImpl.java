@@ -41,7 +41,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProductByProductId(String productId){
-        productRepository.deleteById(productId);
+        if(productRepository.findByProductId(productId).isPresent()) {
+            productRepository.deleteById(productId);
+            log.info("Product deleted successfully");
+        } else {
+            log.info("Unable to delete product, product not found");
+            throw new EcomException("POL0001", "Product Id not found", productId);
+        }
+
     }
 
 

@@ -1,5 +1,6 @@
 package com.demo.ecomApp.controller;
 
+import com.demo.ecomApp.dto.ResponseDto;
 import com.demo.ecomApp.dto.ShopperDto;
 import com.demo.ecomApp.entity.ProductsEntity;
 import com.demo.ecomApp.service.ProductService;
@@ -49,9 +50,16 @@ public class EcomContoller {
     }
 
     @DeleteMapping("/delete-shopper/{productId}/{shopperId}")
-    public ResponseEntity deleteByProductId(@PathVariable("productId") String productId, @PathVariable("shopperId") String shopperId){
+    public ResponseEntity deleteByProductIdAndShopperId(@PathVariable("productId") String productId, @PathVariable("shopperId") String shopperId){
         shelfService.deleteShelvesByProductIdAndShopperId(productId, shopperId);
-        ResponseEntity responseEntity = ResponseEntity.status(HttpStatus.NO_CONTENT).body("Product deleted");
+        ResponseEntity responseEntity = (ResponseEntity) ResponseEntity.status(HttpStatus.NO_CONTENT);
+        return responseEntity;
+    }
+
+    @DeleteMapping("/delete-product/{productId}")
+    public ResponseEntity<ResponseDto> deleteByProductId(@PathVariable("productId") String productId){
+        productService.deleteProductByProductId(productId);
+        ResponseEntity responseEntity = (ResponseEntity) ResponseEntity.status(HttpStatus.NO_CONTENT);
         return responseEntity;
     }
 
