@@ -18,5 +18,6 @@ CREATE TABLE shelves (
     relevancy_score DOUBLE,
     PRIMARY KEY (shopper_id, product_id) ON CASCADE DELETE,
     FOREIGN KEY (product_id) REFERENCES products(product_id)
+    ON DELETE CASCADE
 );
 

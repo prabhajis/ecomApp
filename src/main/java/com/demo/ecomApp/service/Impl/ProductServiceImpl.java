@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -25,16 +25,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void insertProducts(List<ProductDto> productlist){
-        List<ProductsEntity> productsEntityList = new ArrayList<>();
-        for (ProductDto products : productlist) {
-            if(!productRepository.findByProductId(products.getProductId()).isPresent()) {
-                ProductsEntity productsEntity = DtoMapper.convertToEntity(products);
-                productsEntityList.add(productsEntity);
-                log.info("Products inserted. Product Id: {}",productsEntity.getProductId());
-            } else {
-                log.error("Products already exists. Product Id:{}", products.getProductId());
-            }
-        }
+        List<ProductsEntity> productsEntityList = productlist.stream()
+                .filter(p-> !productRepository.findByProductId(p.getProductId()).isPresent())
+                .map(p -> DtoMapper.convertToEntity(p))
+                .collect(Collectors.toList());
+
         productRepository.saveAll(productsEntityList);
     }
 
