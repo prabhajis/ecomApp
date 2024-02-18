@@ -15,4 +15,6 @@ public interface ProductService {
      List<ProductsEntity> getProductsByShopper(String shopperId, String category, String brand, int limit, Pageable pageRequest);
 
      void deleteProductByProductId(String productId);
+
+     ProductsEntity getProductsByProductId(String productId);
 }
