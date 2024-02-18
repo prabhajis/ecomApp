@@ -7,6 +7,7 @@ import com.demo.ecomApp.service.ProductService;
 import com.demo.ecomApp.service.ShelfService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -49,18 +50,26 @@ public class EcomContoller {
         return responseEntity;
     }
 
-    @DeleteMapping("/delete-shopper/{productId}/{shopperId}")
-    public ResponseEntity deleteByProductIdAndShopperId(@PathVariable("productId") String productId, @PathVariable("shopperId") String shopperId){
-        shelfService.deleteShelvesByProductIdAndShopperId(productId, shopperId);
-        ResponseEntity responseEntity = (ResponseEntity) ResponseEntity.status(HttpStatus.NO_CONTENT);
+    @GetMapping("/get-products/{productId}")
+    public ResponseEntity getProductsByProductId(
+            @PathVariable("productId") String productId) {
+
+        ProductsEntity productsEntity = productService.getProductsByProductId(productId);
+        ResponseEntity responseEntity = ResponseEntity.ok(productsEntity);
+        log.info("Data queried Successfully");
         return responseEntity;
     }
 
+    @DeleteMapping("/delete-shopper/{productId}/{shopperId}")
+    public ResponseEntity deleteByProductIdAndShopperId(@PathVariable("productId") String productId, @PathVariable("shopperId") String shopperId){
+        shelfService.deleteShelvesByProductIdAndShopperId(productId, shopperId);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/delete-product/{productId}")
-    public ResponseEntity<ResponseDto> deleteByProductId(@PathVariable("productId") String productId){
+    public ResponseEntity deleteByProductId(@PathVariable("productId") String productId){
         productService.deleteProductByProductId(productId);
-        ResponseEntity responseEntity = (ResponseEntity) ResponseEntity.status(HttpStatus.NO_CONTENT);
-        return responseEntity;
+        return ResponseEntity.noContent().build();
     }
 
 

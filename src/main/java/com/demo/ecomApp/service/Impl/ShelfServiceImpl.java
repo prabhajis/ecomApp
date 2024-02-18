@@ -3,7 +3,6 @@ package com.demo.ecomApp.service.Impl;
 import com.demo.ecomApp.dto.ProductShelfItemDto;
 import com.demo.ecomApp.dto.ShelfDto;
 import com.demo.ecomApp.dto.ShopperDto;
-import com.demo.ecomApp.entity.ProductsEntity;
 import com.demo.ecomApp.entity.ShelfEntity;
 import com.demo.ecomApp.entity.mapper.DtoMapper;
 import com.demo.ecomApp.exception.EcomException;
@@ -11,9 +10,9 @@ import com.demo.ecomApp.repository.ProductRepository;
 import com.demo.ecomApp.repository.ShelfRepository;
 import com.demo.ecomApp.service.ShelfService;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +29,9 @@ public class ShelfServiceImpl implements ShelfService {
 
     @Autowired
     ProductRepository productRepository;
+
+    @Autowired
+    private CacheManager cacheManager;
 
     @Override
     public void insertShelfData(List<ShelfDto> shelfDtoList) {
@@ -55,13 +57,14 @@ public class ShelfServiceImpl implements ShelfService {
         shelfRepository.saveAll(shopperShelfList);
     }
 
+    @Cacheable(value = "shopper", key = "#productId", sync = true)
     @Override
     public List<ShopperDto> getShopperByProducts(String productId, int limit, Pageable pageRequest) {
         List<ShelfEntity> shoppers = shelfRepository.getShelvesByProducts(productId, pageRequest);
-        if(shoppers!= null) {
-            DtoMapper.mapShelfEntitiesToShopperDtos(shoppers);
+        if(shoppers.isEmpty() || shoppers ==null){
+            throw new EcomException("POL0001", "Unable to retrieve shopper", "Shopper not found");
         }
-        return null;
+        return DtoMapper.mapShelfEntitiesToShopperDtos(shoppers);
     }
 
     private List<ShelfDto> removeShelvesByProductId(List<ShelfDto> shelfDtoList, List<String> productIdToRemove) {
@@ -78,10 +81,11 @@ public class ShelfServiceImpl implements ShelfService {
 
     @Override
     public void deleteShelvesByProductIdAndShopperId(String productId, String shopperId) {
-        if (shelfRepository.findByShopperIdAndProductId(shopperId, productId).isPresent()){
-            shelfRepository.deleteShelvesByShopperIdAndProductId(productId, shopperId);
+        Optional<ShelfEntity> shelfEntity = shelfRepository.findByShopperIdAndProductId(shopperId, productId);
+        if (shelfEntity.isPresent()){
+            shelfRepository.delete(shelfEntity.get());
             log.info("Shopper deleted. Product ID:{} Shopper Id:{}", productId, shopperId);
-        } else{
+        } else {
             log.info("Shoppers not found");
             throw new EcomException("POL0001", "Shopper not found", shopperId);
         }
